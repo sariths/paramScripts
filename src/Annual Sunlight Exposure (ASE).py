@@ -74,22 +74,24 @@ if _run:
         
         #iterate through the files in the study folder and set values. If user has specified values, set that.
         for files in os.listdir(_studyFolder):
-            if files.endswith("epw"):
+            if files.endswith("epw") and not _epwFile_:
                 _epwFile_ = setvalue(_epwFile_,files,end='epw')
-            
-            if files.startswith('Daysim_material'):
+
+            if files.startswith('Daysim_material') and not _materialsFile_:
                 _materialsFile_ = setvalue(_materialsFile_,files,start='Daysim_material')
             
-            if files.startswith('Daysim') and files.endswith('.rad') and 'material' not in files:
-                _geometryFile_ = setvalue(_geometryFile_,files)
-            
-            if files.endswith('.pts'):
-                _ptsFile_ = setvalue(_ptsFile_,files,end='.pts')
+            if not _geometryFile_:
+                if files.startswith('Daysim') and files.endswith('.rad') and 'material' not in files:
+                    _geometryFile_ = setvalue(_geometryFile_,files)
+            if not _ptsFile_:
+                if files.endswith('.pts') and not _:
+                    _ptsFile_ = setvalue(_ptsFile_,files,end='.pts')
         
             
     #Check that all the required files exist.
     for files,varnames in ((_epwFile_,'_epwFile_'),(_materialsFile_,'_materialsFile_'),
     (_geometryFile_,'_geometryFile_'),(_ptsFile_,'_ptsFile_')):
+        print(files,varnames)
         assert os.path.exists(files),"The value for {} is {}. It should be a file".format(varnames,files)
         print("{}:\t {}".format(varnames,files))
     
